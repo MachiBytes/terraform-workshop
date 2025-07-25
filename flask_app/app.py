@@ -17,8 +17,11 @@ app = Flask(__name__)
 app.json_encoder = DecimalEncoder
 
 # Initialize DynamoDB client
-dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
-table = dynamodb.Table('products-072025')
+region = os.environ.get('AWS_REGION', 'us-west-2')  # fallback optional
+table_name = os.environ.get('DYNAMODB_TABLE_NAME', 'products-072025')
+
+dynamodb = boto3.resource('dynamodb', region_name=region)
+table = dynamodb.Table(table_name)
 
 @app.route('/products', methods=['POST'])
 def create_product():
